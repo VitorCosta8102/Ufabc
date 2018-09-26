@@ -1,0 +1,4 @@
+para checarmos se o vetor está ordenado precisaremos percorrê-lo inteiro.
+Isso nos dá uma complexidade de ordem n. Assim, a busca binária, que tem 
+ordem O(log(n)), passaria a ter complexidade O(log(n))+O(n), ou seja, 
+ficaria O(n).
