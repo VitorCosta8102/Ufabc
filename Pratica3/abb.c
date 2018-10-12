@@ -67,16 +67,41 @@ void preenche_pai(no *r) {
 
 no* inserir_no_na_arvore(no* r, int valor) {
 	no *aux = (no *)malloc(sizeof(no));
-	
-	if(!r || valor == r->conteudo) 
-		return NULL;
-
-	if(valor < r->conteudo) 
-		aux = inserir_no_na_arvore(r->esq, valor);
-	else 
-		aux = inserir_no_na_arvore(r->dir, valor);
+	//teste se tem memoria suficiente; se não tiver retorna null
 	if(!aux)
 		return NULL;
+	
+	//se r = null então temos uma folha ou arvore vazia; entao cria um novo nó
+	if(!r) {
+		aux->conteudo=valor;
+		aux->esq=NULL;
+		aux->dir=NULL;
+		return aux;
+	}
+	
+	//se o valor for igual a algum já existente retorna null
+	if(valor == r->conteudo) 
+		return NULL;
+
+	//se o valor for menor que o do nó atual devemos inseri-lo à esquerda, caso contrario,
+	//inserimos à direita.
+	if(valor < r->conteudo)  {
+		aux = inserir_no_na_arvore(r->esq, valor);
+		if(aux) 
+			r->esq=aux;
+	}
+	else {
+		aux = inserir_no_na_arvore(r->dir, valor);
+		if(aux)
+			r->dir=aux;
+	}
+	
+	//se chegamos aqui é porque andamos na arvore: se não conseguimos inserir por algum
+	//motivo devemos indicar que não conseguimos
+	if(!aux)
+		return NULL;		
+	//se conseguimos inserir então retornamos o nó atual, pois na última chamada na volta
+	//retornaremos a raiz
 	return r;
 }
 
