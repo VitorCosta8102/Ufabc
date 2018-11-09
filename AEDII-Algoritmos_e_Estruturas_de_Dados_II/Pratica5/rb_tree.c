@@ -110,8 +110,10 @@ void rb_insert(Node** T, int key) {
 		y = x;
 		if(key < y->key)
 			x = x->left;
-		else
+		else if(key > y->key)
 			x = x->right;
+    else
+      return;
 	}
 	PAR(newNode) = y;
 	
@@ -142,16 +144,12 @@ void rb_insert_fixup (Node** T, Node *z) {
 			}
 			else {
 				if(z == PAR(z)->right) {
-					left_rotate(T,PAR(z));
-					right_rotate(T,PAR(z));
-					z->color=BLACK;
-					z->right->color=RED;	
+					z = PAR(z);
+					left_rotate(T,z);
 				} 
-				else {
-					PAR(z)->color = BLACK;
-					GPAR(z)->color = RED;
-					right_rotate(T,GPAR(z));
-				}	
+				PAR(z)->color = BLACK;
+				GPAR(z)->color = RED;
+				right_rotate(T,GPAR(z));	
 			}
 		}
 		else {
@@ -164,16 +162,12 @@ void rb_insert_fixup (Node** T, Node *z) {
 			}
 			else {
 				if(z == PAR(z)->left) {
-					right_rotate(T,PAR(z));
-					left_rotate(T,PAR(z));
-					z->color=BLACK;
-					z->left->color=RED;
+					z = PAR(z);
+					right_rotate(T,z);
 				} 
-				else {
-					PAR(z)->color = BLACK;
-					GPAR(z)->color = RED;
-					left_rotate(T,GPAR(z));
-				}
+				PAR(z)->color = BLACK;
+				GPAR(z)->color = RED;
+				left_rotate(T,GPAR(z));
 			}
 		}
 	}
@@ -190,21 +184,26 @@ void rb_insert_fixup (Node** T, Node *z) {
 *
 */
 void left_rotate(Node** T, Node* x) {
-	Node *pp = x->parent;
-	Node *py = x->right;
-	x->right = py->left;
-	py->left = x;
+	Node *p = x->parent;
+	Node *y = x->right;
+	x->right = y->left;
+	y->left = x;
 	
-	py->parent=x->parent;
-	x->parent=py;
+	x->parent=y;
+	y->parent=p;
 	
-	if(NIL_PTR == py->parent)
-		*T = py;
+	if(x->right!=NIL_PTR)
+		PAR(x->right)=x;
 	
-	if(x==pp->left)
-		pp->left=py;
-	else
-		pp->right=py;
+	if(NIL_PTR == p) 
+		*T = y;
+	else {
+		if(x==p->left)
+			p->left=y;
+		else
+			p->right=y;
+	}
+	
 }
 
 /**
@@ -216,21 +215,25 @@ void left_rotate(Node** T, Node* x) {
 *
 */
 void right_rotate(Node** T, Node* x) {
-	Node *pp = x->parent;
-	Node *py = x->left;
-	x->left = py->right;
-	py->right = x;
+	Node *p = x->parent;
+	Node *y = x->left;
+	x->left = y->right;
+	y->right = x;
 	
-	py->parent=x->parent;
-	x->parent=py;
+	y->parent=p;
+	x->parent=y;
 	
-	if(NIL_PTR == py->parent)
-		*T = py;
+	if(x->left!=NIL_PTR)
+		PAR(x->left) = x;
 	
-	if(x==pp->left)
-		pp->left=py;
-	else
-		pp->right=py;
+	if(NIL_PTR == y->parent)
+		*T = y;
+	else {
+		if(x==p->left)
+			p->left=y;
+		else
+			p->right=y;
+	}
 }
 
 /** Funcao que retorna a altura do no passado

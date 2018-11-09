@@ -5,6 +5,6 @@
 
 void testes(void);
 
-void testeCorretude_altura(int casoTeste[],int tamanhoTeste);
+void criaArvoreTeste(Node **pRaiz,int casoTeste[],int tamanhoTeste);
 
 #endif
